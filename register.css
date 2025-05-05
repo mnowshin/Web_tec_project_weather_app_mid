@@ -1,0 +1,201 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+}
+
+.register-container {
+    display: flex;
+    width: 800px;
+    min-height: 700px; /* Increased to accommodate heading and all fields */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 5%;
+    margin-bottom: 3%;
+}
+
+.left-section {
+    flex: 1;
+    background: linear-gradient(90deg, #1a3c6d, #007bff);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.left-section h1 {
+    font-size: 28px;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.weather-icon {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.left-section p {
+    font-size: 16px;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.right-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f4f8;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px; /* Limit max width for better readability */
+    padding: 30px; /* Increased padding for better spacing */
+    box-sizing: border-box; /* Ensure padding doesn't exceed max-width */
+}
+
+.form-container h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px; /* Space below heading */
+    margin-top: 0; /* Remove default top margin */
+    text-align: center;
+    padding-top: 10px; /* Add top padding to ensure visibility */
+}
+
+.form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Increased gap for better separation between input groups */
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Space between label, input, and error */
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #333;
+}
+
+.input-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 100%; /* Ensure input takes full width of group */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #00c4b4;
+}
+
+.error {
+    color: #dc3545;
+    font-size: 12px;
+    min-height: 18px;
+    display: block;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #00c4b4;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px; /* Space above button */
+}
+
+.form-container button:hover {
+    background-color: #00a89a;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.login-link a {
+    color: #00c4b4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    color: #00a89a;
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .register-container {
+        flex-direction: column;
+        width: 90%;
+        min-height: auto;
+        margin: 20px;
+    }
+
+    .left-section, .right-section {
+        flex: none;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .left-section h1 {
+        font-size: 24px;
+    }
+
+    .left-section p {
+        font-size: 14px;
+    }
+
+    .form-container {
+        padding: 20px; /* Reduced padding on mobile */
+        max-width: 100%;
+    }
+
+    .form-container h2 {
+        font-size: 20px;
+        padding-top: 5px;
+    }
+
+    .form-wrapper {
+        gap: 15px; /* Reduced gap on mobile */
+    }
+
+    .input-group input {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .form-container button {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .login-link {
+        font-size: 12px;
+    }
+}

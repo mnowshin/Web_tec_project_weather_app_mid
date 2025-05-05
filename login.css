@@ -1,0 +1,140 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    min-height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f4f8;
+}
+
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    width: 1200px;
+    justify-content: center;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+    height:80%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 30x 0;
+}
+
+.left-section {
+    flex: 1;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+}
+
+.left-section h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.left-section p {
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+.right-section {
+    flex: 1;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.weather-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.weather-icon img {
+    width: 100%;
+    height: auto;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-container h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+.register-link a {
+    color: #00c4b4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    color: #00a89a;
+    text-decoration: underline;
+}
+.error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2c3e50;
+}

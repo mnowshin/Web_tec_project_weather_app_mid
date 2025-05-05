@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Register</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="register-container">
+        <!-- <div class="left-section">
+            <h1>Weather App <img src="assets/weather.png" alt="Weather Icon" class="weather-icon"></h1>
+            <p>Join us to get personalized weather updates!</p>
+        </div> -->
+        <div class="right-section">
+            <div class="form-container">
+                <h2>Register</h2>
+                <form onsubmit="validateRegistration(event)">
+                    <div class="input-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Enter your full name" required>
+                        <span id="nameError" class="error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="userid">UserID</label>
+                        <input type="text" id="userid" placeholder="Enter your UserID" required>
+                        <span id="useridError" class="error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                        <span id="emailError" class="error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="Enter your city" required>
+                        <span id="locationError" class="error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" placeholder="Enter your country" required>
+                        <span id="countryError" class="error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <span id="passwordError" class="error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="number">Phone Number</label>
+                        <input type="tel" id="number" placeholder="Enter your phone number" required>
+                        <span id="numberError" class="error"></span>
+                    </div>
+                    <button type="submit">Register</button>
+                </form>
+                <p class="login-link">Already have an account? <a href="index.html">Login</a></p>
+            </div>
+        </div>
+    </div>
+    <script src="register.js"></script>
+</body>
+</html>
