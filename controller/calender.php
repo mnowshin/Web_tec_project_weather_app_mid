@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App - Calendar</title>
-    <!-- Fallback to ensure styles load -->
-    <link rel="stylesheet" href="dashboard.css" onerror="this.href='https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';console.log('Failed to load dashboard.css, using Tailwind CSS fallback');">
-    <link rel="stylesheet" href="calendar.css" onerror="console.log('Failed to load calendar.css');">
+    <link rel="stylesheet" href="../views/dashboard.css">
+    <link rel="stylesheet" href="../views/calender.css">
 </head>
 <body>
     <div class="top-bar">
         <h2>Weather Calendar</h2>
         <div class="user-profile" onclick="toggleDropdown()">
-            <img src="assets/user-placeholder.png" alt="User Photo" class="user-photo" onerror="this.src='https://via.placeholder.com/40';console.log('Failed to load user-placeholder.png, using placeholder');">
+            <img src="../views/assets/user-placeholder.png" alt="User Photo" class="user-photo">
             <span id="username">User</span>
             <div id="userDropdown" class="dropdown">
                 <button onclick="logout()">Logout</button>
@@ -48,9 +47,8 @@
     <footer class="footer">
         <p>Powered by webTec_Project_aiub</p>
     </footer>
-    <!-- Fallback for JavaScript files -->
-    <script src="include.js" onerror="console.log('Failed to load include.js');"></script>
-    <script src="dashboard.js" onerror="console.log('Failed to load dashboard.js');"></script>
-    <script src="calendar.js" onerror="console.log('Failed to load calendar.js');"></script>
+    <script src="../views/include.js"></script>
+    <script src="../views/dashboard.js"></script>
+    <script src="../views/calender.js"></script>
 </body>
 </html>

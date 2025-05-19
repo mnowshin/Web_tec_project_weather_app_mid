@@ -40,12 +40,12 @@ let currentDayIndex = 0;
 
 function getWeatherIcon(condition) {
     const iconMap = {
-        'Sunny': 'assets/sunny.png',
-        'Rainy': 'assets/rainy.png',
-        'Cloudy': 'assets/cloudy.png',
-        'Partly Cloudy': 'assets/cloudy.png',
-        'Thunderstorm': 'assets/rainy.png',
-        'Dramatic Cloudy': 'assets/cloudy.png'
+        'Sunny': '../assets/sunny.png',
+        'Rainy': '../assets/rainy.png',
+        'Cloudy': '../assets/cloudy.png',
+        'Partly Cloudy': '../assets/cloudy.png',
+        'Thunderstorm': '../assets/rainy.png',
+        'Dramatic Cloudy': '../assets/cloudy.png'
     };
     return iconMap[condition] || 'assets/cloudy.png';
 }

@@ -13,8 +13,8 @@ function validateForm(event) {
     let isValid = true;
 
     // Username validation
-    if (username.length < 4) {
-        usernameError.textContent = 'Username must be at least 4 characters long';
+    if (username.length < 6) {
+        usernameError.textContent = 'Username must be at least 6 characters long';
         isValid = false;
     }
 
@@ -24,10 +24,9 @@ function validateForm(event) {
         isValid = false;
     }
 
-    // If valid, store username and redirect to dashboard
+    // If valid, submit the form (let PHP handle redirect)
     if (isValid) {
-        localStorage.setItem('username', username);
-        window.location.href = 'dashboard.html';
+        event.target.submit();
     }
 
     return isValid;

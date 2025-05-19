@@ -95,6 +95,6 @@ function validateRegistration(event) {
         users.push(user);
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('registrationSuccess', 'Registration successful! Please login.');
-        window.location.href = 'index.html';
+        window.location.href = '../index.php';
     }
 }
