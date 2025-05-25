@@ -1,5 +1,5 @@
 <?php
-define('BASE_URL', '/mr');
+define('BASE_URL', '/Web_tec_project_weather_app_mid');
 // default timezone
 date_default_timezone_set('Asia/Dhaka');
 // development

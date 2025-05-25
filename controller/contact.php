@@ -45,11 +45,11 @@ require_once "../config.php";
                         </div>
                         
                         <div class="member-card">
-                            <img src="<?= BASE_URL ?>/assets/profile-placeholder.png" alt="Member Photo" class="member-photo">
+                            <img src="<?= BASE_URL ?>/assets/eshika.jpg" alt="Member Photo" class="member-photo">
                             <div class="member-details">
-                                <h3>Team Member Name</h3>
-                                <p class="student-id">Student ID: XX-XXXXX-X</p>
-                                <p class="section">Section: X</p>
+                                <h3>Eshika Biswas</h3>
+                                <p class="student-id">Student ID: 22-46243-1</p>
+                                <p class="section">Section: C</p>
                                 <div class="social-links">
                                     <a href="mailto:email@example.com" class="email-link">
                                         <img src="<?= BASE_URL ?>/assets/email.png" alt="Email">

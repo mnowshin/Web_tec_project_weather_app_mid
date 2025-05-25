@@ -163,7 +163,7 @@ function renderCalendarWithWeather(date, weatherData) {
     let dateIndex = 1 - firstDay.getDay();
     
     // Get BASE_URL from a global variable or set it here if not available
-    const BASE_URL = window.BASE_URL || '/mr';
+    const BASE_URL = window.BASE_URL || '/Web_tec_project_weather_app_mid';
 
     while (dateIndex <= lastDay.getDate()) {
         for (let i = 0; i < 7 && dateIndex <= lastDay.getDate(); i++) {
