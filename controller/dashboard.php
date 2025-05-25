@@ -1,4 +1,3 @@
 <?php
-
-include("../views/dashboard.view.php");
+include("dashboard.view.php");
 ?>

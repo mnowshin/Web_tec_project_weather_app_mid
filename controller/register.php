@@ -1,13 +1,15 @@
 <?php
-$nameError = $useridError = $emailError = $locationError = $countryError = $passwordError = $numberError = '';
-$name = $userid = $email = $location = $country = $password = $number = '';
+require_once "../config.php";
+require_once "../model/connection.php";
+
+$nameError = $useridError = $emailError = $locationError = $passwordError = $numberError = '';
+$name = $userid = $email = $location = $password = $number = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $userid = trim($_POST['userid'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $location = trim($_POST['location'] ?? '');
-    $country = trim($_POST['country'] ?? '');
     $password = $_POST['password'] ?? '';
     $number = trim($_POST['number'] ?? '');
 
@@ -29,10 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $locationError = 'Location is required';
         $isValid = false;
     }
-    if ($country === '') {
-        $countryError = 'Country is required';
-        $isValid = false;
-    }
+
     // Password: 8+ chars, upper, lower, number, special char
     if ($password === '') {
         $passwordError = 'Password is required';
@@ -47,9 +46,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($isValid) {
-        // Registration success (no DB, so just redirect to login)
-        header("Location: ../index.php?register=success");
-        exit();
+        try {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            
+            // Check if user already exists
+            $check = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+            if (!$check) {
+                echo "Prepare check failed: " . $conn->error; // Debug output
+                $isValid = false;
+            } else {
+                $check->bind_param("ss", $userid, $email);
+                $check->execute();
+                
+                if ($check->get_result()->num_rows > 0) {
+                    $useridError = 'Username or Email already exists';
+                    $isValid = false;
+                    
+                } else {
+                   
+                    $stmt = $conn->prepare("INSERT INTO users (name, username, email, password, number, location) VALUES (?, ?, ?, ?, ?, ?)");
+                    if (!$stmt) {
+                        echo "Prepare insert failed: " . $conn->error; // Debug output
+                        throw new Exception("Prepare failed: " . $conn->error);
+                    }
+                    
+                    $stmt->bind_param("ssssss", $name, $userid, $email, $hashed_password, $number, $location);
+                    
+                    if ($stmt->execute()) {
+                        $response = [
+                            'success' => true,
+                            'message' => 'Registration successful!',
+                            'redirect' => BASE_URL . '/controller/index.php?register=success'
+                        ];
+                        header('Content-Type: application/json');
+                        echo json_encode($response);
+                        exit();
+                    } else {
+                        $response = [
+                            'success' => false,
+                            'message' => 'Registration failed',
+                            'errors' => ['database' => $stmt->error]
+                        ];
+                        header('Content-Type: application/json');
+                        echo json_encode($response);
+                        exit();
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $response['errors']['general'] = "Registration failed. Please try again.";
+        }
+    } else {
+        $response['errors'] = [
+            'name' => $nameError,
+            'userid' => $useridError,
+            'email' => $emailError,
+            'location' => $locationError,
+            'password' => $passwordError,
+            'number' => $numberError
+        ];
+    }
+    
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        echo json_encode($response);
+        exit;
     }
 }
 ?>
@@ -91,11 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" id="location" name="location" placeholder="Enter your city" value="<?= htmlspecialchars($location) ?>" required>
                         <span id="locationError" class="error"><?= $locationError ?></span>
                     </div>
-                    <div class="input-group">
-                        <label for="country">Country</label>
-                        <input type="text" id="country" name="country" placeholder="Enter your country" value="<?= htmlspecialchars($country) ?>" required>
-                        <span id="countryError" class="error"><?= $countryError ?></span>
-                    </div>
+
                     <div class="input-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" placeholder="Enter your password" required>
@@ -108,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <button type="submit">Register</button>
                 </form>
-                <p class="login-link">Already have an account? <a href="../index.php">Login</a></p>
+                <p class="login-link">Already have an account? <a href="<?= BASE_URL ?>">Login</a></p>
             </div>
         </div>
     </div>

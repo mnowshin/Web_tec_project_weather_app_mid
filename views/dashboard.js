@@ -1,16 +1,27 @@
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    const username = localStorage.getItem('username') || 'User';
+    const username = document.getElementById('username').textContent || 'User';
     document.getElementById('username').textContent = username;
     drawChart();
-    displayForecast();
+    const userLocation = document.getElementById('userLocation') ? document.getElementById('userLocation').value : 'Dhaka, Bangladesh';
+    displayForecast(userLocation);
     document.addEventListener('click', closeDropdownOnOutsideClick);
 });
 
 function toggleDropdown(event) {
     const dropdown = document.getElementById('userDropdown');
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    event.stopPropagation();
+    const isVisible = dropdown.style.display === 'block';
+    
+    // Close any open dropdowns first
+    const dropdowns = document.getElementsByClassName('dropdown');
+    for (let d of dropdowns) {
+        d.style.display = 'none';
+    }
+    
+    if (!isVisible) {
+        dropdown.style.display = 'block';
+        event.stopPropagation();
+    }
 }
 
 function closeDropdownOnOutsideClick(event) {
@@ -23,20 +34,8 @@ function closeDropdownOnOutsideClick(event) {
 
 function logout() {
     localStorage.removeItem('username');
-    window.location.href = 'index.html';
+    window.location.href = 'index.php';
 }
-
-const forecastData = [
-    { date: 'May 06, 2025', temperature: '22°C', condition: 'Sunny', rainChance: '10%' },
-    { date: 'May 07, 2025', temperature: '23°C', condition: 'Partly Cloudy', rainChance: '15%' },
-    { date: 'May 08, 2025', temperature: '21°C', condition: 'Rainy', rainChance: '60%' },
-    { date: 'May 09, 2025', temperature: '19°C', condition: 'Cloudy', rainChance: '30%' },
-    { date: 'May 10, 2025', temperature: '24°C', condition: 'Sunny', rainChance: '5%' },
-    { date: 'May 11, 2025', temperature: '20°C', condition: 'Thunderstorm', rainChance: '70%' },
-    { date: 'May 12, 2025', temperature: '22°C', condition: 'Partly Cloudy', rainChance: '20%' }
-];
-
-let currentDayIndex = 0;
 
 function getWeatherIcon(condition) {
     const iconMap = {
@@ -44,28 +43,48 @@ function getWeatherIcon(condition) {
         'Rainy': '../assets/rainy.png',
         'Cloudy': '../assets/cloudy.png',
         'Partly Cloudy': '../assets/cloudy.png',
-        'Thunderstorm': '../assets/rainy.png',
-        'Dramatic Cloudy': '../assets/cloudy.png'
+        'Thunderstorm': '../assets/thunderstorm.png',
+        'Storm': '../assets/storm.png'
     };
-    return iconMap[condition] || 'assets/cloudy.png';
+    for (const key in iconMap) {
+        if (condition && condition.toLowerCase().includes(key.toLowerCase())) {
+            return iconMap[key];
+        }
+    }
+    return 'assets/cloudy.png';
 }
 
-function displayForecast() {
-    const forecastList = document.getElementById('forecastList');
-    forecastList.innerHTML = '';
-    forecastData.forEach(day => {
-        const forecastItem = document.createElement('div');
-        forecastItem.classList.add('forecast-item');
-        const iconSrc = getWeatherIcon(day.condition);
-        forecastItem.innerHTML = `
-            <div class="weather-icon"><img src="${iconSrc}" alt="${day.condition}"></div>
-            <div class="forecast-details">
-                <p class="date">${day.date}</p>
-                <p>${day.condition}</p>
-            </div>
-            <div class="temperature">${day.temperature}</div>
-        `;
-        forecastList.appendChild(forecastItem);
+function displayForecast(city) {
+    $.ajax({
+        url: 'get_forecast.php',
+        type: 'POST',
+        data: { city: city },
+        dataType: 'json',
+        success: function(response) {
+            const forecastList = document.getElementById('forecastList');
+            forecastList.innerHTML = '';
+            if (response.success && response.data.length > 0) {
+                response.data.forEach(day => {
+                    const forecastItem = document.createElement('div');
+                    forecastItem.classList.add('forecast-item');
+                    const iconSrc = getWeatherIcon(day.condition);
+                    forecastItem.innerHTML = `
+                        <div class="weather-icon"><img src="${iconSrc}" alt="${day.condition}"></div>
+                        <div class="forecast-details">
+                            <p class="date">${day.date}</p>
+                            <p>${day.condition}</p>
+                        </div>
+                        <div class="temperature">${day.temperature}</div>
+                    `;
+                    forecastList.appendChild(forecastItem);
+                });
+            } else {
+                forecastList.innerHTML = '<div style="padding:10px;">No forecast data available.</div>';
+            }
+        },
+        error: function() {
+            document.getElementById('forecastList').innerHTML = '<div style="padding:10px;">Error loading forecast.</div>';
+        }
     });
 }
 
@@ -79,52 +98,61 @@ function showNextDay() {
     document.querySelector('.location-time p span').textContent = '';
 }
 
+$(document).ready(function() {
+    $('#searchBtn').click(function() {
+        searchWeather();
+        const city = $('#cityInput').val().trim() || $('#userLocation').val();
+        if (city) displayForecast(city);
+    });
+});
+
 function searchWeather() {
-    const cityInput = document.getElementById('cityInput').value.trim();
-    const notification = document.getElementById('notification');
-    const savedLocation = JSON.parse(localStorage.getItem('selectedLocation')) || { name: 'Tripura, India', lat: 23.64, lon: 91.34 };
-
-    notification.style.display = 'none';
-    notification.textContent = '';
-
-    let city = cityInput || savedLocation.name;
+    const city = $('#cityInput').val().trim();
+    const notification = $('#notification');
 
     if (city === '') {
-        notification.textContent = 'Please enter a city name';
-        notification.style.display = 'block';
+        notification.text('Please enter a city name').show();
         return;
     }
 
-    // Placeholder weather data (replace with API call)
-    const weatherData = {
-        city: city,
-        temperature: '20°C',
-        condition: 'Dramatic Cloudy',
-        humidity: '65%',
-        wind: '12 km/h',
-        rainChance: '24%',
-        pressure: '720 hPa',
-        uvIndex: '2.3',
-        time: '08:54 AM',
-        sunrise: '4:20 AM',
-        sunset: '5:50 PM'
-    };
+    $.ajax({
+        url: 'get_weather.php',
+        type: 'POST',
+        data: { city: city },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                updateWeatherUI(response.data);
+                notification.text(`Weather updated for ${city}`).show();
+            } else {
+                notification.text(response.message || 'Failed to fetch weather data').show();
+            }
+        },
+        error: function() {
+            notification.text('Error fetching weather data').show();
+        }
+    });
+}
 
-    document.querySelector('.location-time h3').textContent = weatherData.city;
-    document.querySelector('.location-time p span').textContent = weatherData.time;
-    document.querySelector('.temperature').textContent = weatherData.temperature;
-    document.querySelector('.condition').textContent = weatherData.condition;
-    document.querySelector('.overview-item:nth-child(1) span:last-child').textContent = weatherData.wind;
-    document.querySelector('.overview-item:nth-child(2) span:last-child').textContent = weatherData.rainChance;
-    document.querySelector('.overview-item:nth-child(3) span:last-child').textContent = weatherData.pressure;
-    document.querySelector('.overview-item:nth-child(4) span:last-child').textContent = weatherData.uvIndex;
-    document.querySelector('.info-item:nth-child(1) .progress').style.width = `${parseInt(weatherData.rainChance)}%`;
-    document.querySelector('.info-item:nth-child(2) div p:nth-child(1) span').textContent = weatherData.sunrise;
-    document.querySelector('.info-item:nth-child(2) div p:nth-child(2) span').textContent = weatherData.sunset;
+function updateWeatherUI(data) {
+    $('.location-time h3').text(data.city);
+    $('.temperature').text(data.temperature + '°C');
+    $('.condition').text(data.weather_condition);
+    $('.overview-item:nth-child(1) span:last-child').text(data.wind_speed + ' km/h');
+    $('.overview-item:nth-child(2) span:last-child').text(data.rain_chance + '%');
+    $('.overview-item:nth-child(3) span:last-child').text(data.pressure + ' hPa');
+    $('.overview-item:nth-child(4) span:last-child').text(data.uv_index);
+    $('.info-item:nth-child(1) .progress').css('width', data.rain_chance + '%');
+    $('.info-item:nth-child(2) div p:nth-child(1) span').text(formatTime(data.sunrise));
+    $('.info-item:nth-child(2) div p:nth-child(2) span').text(formatTime(data.sunset));
+}
 
-    notification.textContent = `Weather updated for ${city}`;
-    notification.style.display = 'block';
-    drawChart();
+function formatTime(timeString) {
+    return new Date('2000/01/01 ' + timeString).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
 }
 
 function drawChart() {

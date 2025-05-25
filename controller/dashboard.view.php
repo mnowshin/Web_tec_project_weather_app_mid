@@ -1,53 +1,45 @@
+<?php
+global $conn;
+require_once "check_auth.php";
+require_once "../config.php";
+require_once "../model/weather_model.php";
+
+$userId = $_SESSION['user_id'] ?? 0;
+$userInfo = null;
+$todayInfo = null;
+$date = date('Y-m-d');
+$result = get_today_weather_by_user($userId, $date);
+if ($result && $result->num_rows > 0) {
+    $userInfo = $result->fetch_assoc();
+    $todayInfo = $userInfo;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App - Dashboard</title>
-    <link rel="stylesheet" href="/views/dashboard.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/views/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="top-bar">
         <h2>Weather Dashboard</h2>
-        <div class="user-profile" onclick="toggleDropdown(event)">
-            <span id="username">User</span>
-            <img src="../assets/person.png" alt="User Photo" class="user-photo">
-            <div id="userDropdown" class="dropdown">
-                <button onclick="logout()">Logout</button>
-            </div>
-        </div>
+        <?php include '../views/shared_dropdown.php'; ?>
     </div>
     <div class="main-layout">
         <div class="sidebar" id="sidebar">
-            <button class="toggle-btn" onclick="toggleSidebar()">
-                <img src="../assets/toggle.png" alt="Toggle Menu" class="toggle-icon">
-            </button>
-            <div class="sidebar-content">
-                <ul>
-                    <li>
-                        <a href="map.php">
-                            <img src="../assets/map.png" alt="Map Icon" class="weather-icon"> Map
-                        </a>
-                    </li>
-                    <li>
-                        <a href="saved-locations.php">
-                            <img src="../assets/saved-location.png" alt="Saved Locations Icon" class="weather-icon"> Saved Locations
-                        </a>
-                    </li>
-                    <li>
-                        <a href="calendar.html">
-                            <img src="../assets/calendar.png" alt="Calendar Icon" class="weather-icon"> Calendar
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <?php include '../views/side_bar.php'?>
         </div>
         <div class="content-area">
             <div class="dashboard-container">
+                <input type="hidden" id="userLocation" value="<?php echo htmlspecialchars($todayInfo['city'] ?? $userInfo['location'] ?? 'Dhaka, Bangladesh'); ?>">
                 <div class="search-bar">
                     <input type="text" id="cityInput" placeholder="Search location here">
-                    <button onclick="searchWeather()">Search</button>
+                    <button id="searchBtn">Search</button>
                 </div>
                 <div class="main-content">
                     <div class="left-section">
@@ -56,42 +48,47 @@
                                 <h3>Today overview</h3>
                                 <div class="overview-item">
                                     <span>Wind Speed</span>
-                                    <span>12km/h</span>
+                                    <span><?php echo $userInfo['wind_speed']??0;?> km/h</span>
                                 </div>
                                 <div class="overview-item">
                                     <span>Rain Chance</span>
-                                    <span>24%</span>
+                                    <span><?php echo $userInfo['rain_chance']??0; ?>%</span>
                                 </div>
                                 <div class="overview-item">
                                     <span>Pressure</span>
-                                    <span>720 hPa</span>
+                                    <span><?php echo $userInfo['pressure']?? 0 ;?> hPa</span>
                                 </div>
                                 <div class="overview-item">
                                     <span>UV Index</span>
-                                    <span>2.3</span>
+                                    <span><?php echo $userInfo['uv_index']?? 0; ?></span>
                                 </div>
                             </div>
                             <div class="current-weather">
                                 <div class="location-time">
-                                    <h3>Megajam Barat</h3>
-                                    <p>Tegal, Indonesia <span>08:54 AM</span></p>
+                                    <h3><?php echo $todayInfo['location'] ?? "" ;?> <span><span><?php echo date('h:i A'); ?></span></span></h3>
                                 </div>
                                 <div class="weather-main">
-                                    <p class="temperature">20°C</p>
-                                    <p class="condition">Dramatic Cloudy</p>
+                                    <p class="temperature"><?php echo $todayInfo['temperature'] ?? 0; ?>°C</p>
+                                    <p class="condition"><?php echo $todayInfo['weather_condition']??""; ?></p>
                                 </div>
                                 <div class="additional-info">
                                     <div class="info-item">
                                         <span>Chance of rain</span>
                                         <div class="progress-bar">
-                                            <div class="progress" style="width: 44%;"></div>
+                                            <div class="progress" style="width: <?php echo $todayInfo['rain_chance']??0; ?>%;"></div>
                                         </div>
                                     </div>
                                     <div class="info-item">
                                         <span>Sunrise & Sunset</span>
                                         <div>
-                                            <p>Sunrise <span>4:20 AM</span> (4 hours ago)</p>
-                                            <p>Sunset <span>5:50 PM</span> (in 9 hours)</p>
+                                            <p>
+                                                Sunrise
+                                                <span><?php echo date("h:i A", strtotime($todayInfo['sunrise'])) ?? '00:00 AM'; ?></span>
+                                            </p>
+                                            <p>
+                                                Sunset
+                                                <span><?php echo date("h:i A", strtotime($todayInfo['sunset'])) ?? '00:00 AM'; ?></span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -115,6 +112,7 @@
     <footer class="footer">
         <p>Powered by webTec_Project_aiub</p>
     </footer>
-    <script src="/views/dashboard.js"></script>
+
+    <script src="<?= BASE_URL ?>/views/dashboard.js"></script>
 </body>
 </html>

@@ -1,12 +1,10 @@
 function validateRegistration(event) {
     event.preventDefault();
 
-    // Get form inputs
     const name = document.getElementById('name').value.trim();
     const userid = document.getElementById('userid').value.trim();
     const email = document.getElementById('email').value.trim();
     const location = document.getElementById('location').value.trim();
-    const country = document.getElementById('country').value.trim();
     const password = document.getElementById('password').value;
     const number = document.getElementById('number').value.trim();
 
@@ -15,7 +13,6 @@ function validateRegistration(event) {
     const useridError = document.getElementById('useridError');
     const emailError = document.getElementById('emailError');
     const locationError = document.getElementById('locationError');
-    const countryError = document.getElementById('countryError');
     const passwordError = document.getElementById('passwordError');
     const numberError = document.getElementById('numberError');
 
@@ -24,7 +21,6 @@ function validateRegistration(event) {
     useridError.textContent = '';
     emailError.textContent = '';
     locationError.textContent = '';
-    countryError.textContent = '';
     passwordError.textContent = '';
     numberError.textContent = '';
 
@@ -63,12 +59,6 @@ function validateRegistration(event) {
         isValid = false;
     }
 
-    // Country: Non-empty
-    if (!country) {
-        countryError.textContent = 'Country is required';
-        isValid = false;
-    }
-
     // Password: 8+ characters, mixed case, numbers, special characters
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
     if (!password) {
@@ -91,10 +81,40 @@ function validateRegistration(event) {
 
     // If valid, store user data and redirect
     if (isValid) {
-        const user = { name, userid, email, location, country, password, number };
-        users.push(user);
-        localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem('registrationSuccess', 'Registration successful! Please login.');
-        window.location.href = '../index.php';
+        // Create form data
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('userid', userid);
+        formData.append('email', email);
+        formData.append('location', location);
+        formData.append('password', password);
+        formData.append('number', number);
+
+        // Send AJAX request
+        fetch('register.php', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.href = data.redirect;
+            } else {
+                if (data.errors) {
+                    if (data.errors.userid) useridError.textContent = data.errors.userid;
+                    if (data.errors.email) emailError.textContent = data.errors.email;
+                    if (data.errors.database) alert(data.errors.database);
+                }
+                console.error('Registration failed:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Registration failed. Please try again.');
+        });
     }
 }
